@@ -1,0 +1,25 @@
+#content-container {
+	position:absolute;
+	height:100%;
+	width: 100%;
+	top: 0px;
+	padding-top: 64px;
+}
+
+#hierarchy-container {
+	position: relative;
+	height: 100%;
+	width: 30%;
+}
+
+@media only screen and (max-width: 320px) {
+	#hierarchy-container {
+	width: 100%;
+}
+}
+
+.hierarchy-actions-button {
+	padding: 3px;
+	font-size: x-small;
+}
+

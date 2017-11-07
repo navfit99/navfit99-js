@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NAVFIT99</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/generalElements.css" rel="stylesheet">
+  <link href="css/generalAlerts.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script src="js/jq-ajax-progress.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+	
+	<nav class="navbar navbar-default">
+
+				<div class="logo-64">
+					<h6 class="title-64">NAVFIT99</h6>
+				</div>
+			
+				<div class="button-bar">
+			    <button disabled type="button" class="btn btn-primary action-btn" id="import-btn">Import<div id="import-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-primary action-btn" id="new-file-btn">New NAVFIT<div id="new-file-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-warning action-btn" id="edit-btn">Edit</button>
+			  </div>
+
+	</nav>
+
+	<!-- Alert elements -->
+	<div class="alert alert-danger alert-dismissible" id="error-alert" role="alert">
+		<button type="button" class="close" id="error-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<p id="error-text"></p>
+	</div>
+
+
+
+			<div id="main-logo">
+				<h1 id="main-title">NAVFIT99</h1>
+
+			</div>
+		
+			<h4 id="main-tagline">When '98A no work.</h4>
+
+
+			
+			<ol><h2>FAQ</h2>
+			  <li>
+			  	<ul><strong>What is NAVFIT99?</strong>
+			  		<li>NAVFIT99 is an open source project that allows you to view and edit NAVFIT98A database <i>(.accdb)</i> files. This website uses a publicly accessible instance of NAVFIT99 on the internet which is intended for evaluation and testing purposes only. </li>
+			  	</ul>
+			  </li>
+			 <li>
+			  	<ul><strong>What is NAVFIT98A?</strong>
+			  		<li>NAVFIT98A is a program that allows people to organize and edit U.S. Navy Evaluations and Fitness Reports. NAVFIT98A is available for Windows. See <a href="http://www.public.navy.mil/bupers-npc/career/performanceevaluation/pages/softwareforms.aspx">here</a> for more information.</li>
+			  	</ul>
+			  </li>
+			  <li>
+			  	<ul><strong>Is there a warranty for NAVFIT99?</strong>
+			  		<li>NO. NAVFIT99 is released under <a href="assets/LICENSE.txt">MIT License</a>.
+			  	</ul>
+			  </li>
+			</ol>
+
+	<!-- Import elements -->
+		<div class="alert alert-info" id="import-alert" role="alert">
+			<form method="post" enctype="multipart/form-data" id="import-form">
+				<input id="file-input" type="file" name="file" size="60" />
+				<input type="submit" value="Upload" />
+			</form>
+		</div>
+
+	<!-- Edit elements -->
+	<div class="alert alert-warning alert-dismissible" id="edit-alert" role="alert">
+		<button type="button" class="close" id="edit-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<form method="get" id="edit-form">
+			<strong><p>Paste previously created NAVFIT ID</p></strong>
+			<input id="edit-uuid-text" type="text" name="fileUUID" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" /><br/><br/>
+			<button id="edit-submit-btn" type="button" class="btn btn-primary" id="disclaimer-btn">Edit NAVFIT</button>
+		</form>
+	</div>
+
+	<div class="alert alert-warning disclaimer" role="alert">
+		<h3>NOTICE AND DISCLAIMER</h3>
+		<p>This a web demo of NAVFIT99, an open source project. </p>
+		<p>USE OF THIS WEBSITE IS AT YOUR OWN RISK. Transmission and storage of data on the internet is inherently insecure. </p>
+		<p>You accept all responsibility for using this website. </p>
+		<p>You can try out NAVFIT99 on this website by uploading a NAVFIT database with dummy information.</p>
+		<p>Sending and entering sensitive data on this website is discouraged. You are free to download, view the code of, and run NAVFIT99 on your own private environment. </p>
+		<p> NAVFIT99 is released under <a href="assets/LICENSE.txt" class="alert-link">MIT License</a>. </p>
+		<p>NAVFIT99 IS NOT AFFILIATED OR ENDORSED BY THE U.S. NAVY or U.S. GOVERNMENT. For information regarding NAVFIT98A, <a href="http://www.public.navy.mil/bupers-npc/career/performanceevaluation/pages/softwareforms.aspx" class="alert-link">click here.</a></p>
+		<p>If you do not agree to the above notice and disclaimer, do not use this website. </p>
+		<br/>
+		<button type="button" class="btn btn-primary" id="disclaimer-btn">I Agree</button>
+	</div>
+</body>
+</html>

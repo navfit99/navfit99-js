@@ -1,0 +1,17 @@
+#error-alert {
+	position: fixed;
+	top: 10px;
+	margin:auto;
+	width: 50%;
+	min-width: 375px;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+@media screen and (max-width: 480px) {
+    #error-alert {
+    	min-width: 90%;
+    }
+}

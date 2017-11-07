@@ -1,0 +1,82 @@
+#reports-container {
+	background: #aaa;
+	overflow-y: scroll;
+	height: 50%;
+	width: 100%;
+	float:left;
+}
+
+.report-row {
+	width: 100%;
+	background-color: #3656A2;
+	padding: 5px;
+	color: #FFFFFF;
+}
+
+.report-top-bar {
+	width: 100%;
+}
+
+.report-collapse-button {
+	display: inline;
+	width: 20px;
+	height: 20px;
+	padding: 2px 2px 2px 2px;
+	margin: 0px 0px 0px 0px;
+	font-size: x-small;
+}
+
+.report-title {
+	display: inline-block;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-weight: bold;
+	font-size: small;
+}
+
+.report-selected {
+	background-color: #763806;
+  transition: all 0.5s;
+}
+
+.report-comment {
+	display: inline;
+	width: 10px;
+	font-size: x-small;
+	overflow: scroll;
+}
+
+.report-float-right-element {
+	position: absolute;
+	display: inline;
+	float:right;
+	font-size: x-small;
+	right: 0;
+}
+
+.report-actions-group>ul {
+	min-width: auto;
+	background-color: #666;
+}
+
+
+.report-actions-group>ul>li {
+	font-size: x-small;
+}
+
+
+.elementHandle {
+	padding: 2px 2px;
+	margin: 2px 2px;
+	color: white;
+}
+
+.report-interior {
+	background-color: #436cc1;
+	padding: 1px 0px 1px 10px;
+
+	/* http://jsfiddle.net/3fTyt/1120/ */
+	-webkit-box-shadow: inset 0 20px 20px -20px rgba(0,0,0,0.8);
+  -moz-box-shadow: inset 0 20px 20px -20px rgba(0,0,0,0.8);
+  box-shadow: inset 0 20px 20px -20px rgba(0,0,0,0.8);
+}

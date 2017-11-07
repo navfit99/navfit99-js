@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>download</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+<form method="post" action="http://localhost:8000/download">
+        <p>localhost:8000/download</p>
+        <p>editorID<input type="text" name="editorID" /></p>
+        <p>authToken<input type="text" name="authToken" /></p>
+        <p>fileUUID<input type="text" name="fileUUID" /></p>
+        <br />
+        <br /> <input type="submit" value="Upload" />
+    </form>
+
+
+    <form method="post" action="http://runs.io:8080/upload"
+        enctype="multipart/form-data">
+        <p>runs.io:8080/upload</p>
+        <p>editorID<input type="text" name="editorID" /></p>
+        <p>authToken<input type="text" name="authToken" /></p>
+        Select file to upload: <input type="file" name="file" size="60" /><br />
+        <br /> <input type="submit" value="Upload" />
+    </form>
+    </body>
+</html>
