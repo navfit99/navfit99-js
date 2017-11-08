@@ -1,0 +1,16 @@
+.fields-row {
+	display: inline-block;
+}
+
+.field-block {
+	border-style: solid;
+	border-width: thin;
+}
+
+.field-block>input[type=text] {
+	width: 100%;
+}
+
+.field-block>select {
+	width: 100%;
+}

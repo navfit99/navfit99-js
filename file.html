@@ -9,11 +9,13 @@
   <link href="css/file.css" rel="stylesheet">
   <link href="css/folders.css" rel="stylesheet">
   <link href="css/reports.css" rel="stylesheet">
-  
+  <link href="css/report-detail.css" rel="stylesheet">
+
 	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/constants.js"></script>
 	<script type="text/javascript" src="js/file.js"></script>
+	<script type="text/javascript" src="js/report-detail.js"></script>
 	<!--
 	<script type="text/javascript" src="js/folders.js"></script>
 	<script type="text/javascript" src="js/reports.js"></script-->
@@ -46,10 +48,16 @@
 
 	<div class="" id="content-container" >
 		<div class="" id="hierarchy-container">
-			<div id="folders-container"></div>
-			<div id="reports-container"></div>
+			<div id="folders-container">
+				<div id="folders-background">Folders</div>
+			</div>
+			<div id="reports-container">
+				<div id="reports-background">Reports</div>
+			</div>
 		</div>
-		<div class="" id="detail-container"></div>
+		<div class="container" id="detail-container">
+			<div id="detail-background">Details</div>
+		</div>
 	</div>
 </div>
 

@@ -303,6 +303,9 @@ function createReportElement(reportMap) {
       	element.addClass('report-selected');
 
       	//load report in detail view
+
+      	$('.detail-container').empty();
+      	showReportDetail();
   		});
     })(reportMap[reportIDKey], title);
 

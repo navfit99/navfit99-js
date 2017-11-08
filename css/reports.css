@@ -1,5 +1,6 @@
 #reports-container {
-	background: #aaa;
+	position: relative;
+	background: #888;
 	overflow-y: scroll;
 	height: 50%;
 	width: 100%;

@@ -1,9 +1,11 @@
 #folders-container {
+	position: relative;
 	background: #aaa;
 	overflow-y: scroll;
 	height: 50%;
 	width: 100%;
 	float:left;
+
 }
 
 .folder-row {
