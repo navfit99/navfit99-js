@@ -3,6 +3,8 @@ var folders = []; //array
 var reports = {}; //map
 var retrievedFolders = [];
 
+var pendingChanges = {};
+
 function disableMainUI() {
 	$('.action-btn').prop('disabled', true);
 }
@@ -11,13 +13,41 @@ function enableMainUI() {
 	$('.action-btn').prop('disabled', false);
 }
 
-function showErrorAlertWithText(text) {
-	$('#error-alert').show();
-	$('#error-text').text(text);
+function createChangeID(scope, type, updatedObj) {
+	var objectKeyword;
+
+	switch (scope) {
+		case EditScopeEnum.navfit:
+			objectKeyword = 'navfit';
+			break;
+		case EditScopeEnum.folder:
+			objectKeyword = 'folder' + updatedObj[folderIDKey];
+			break;
+		case EditScopeEnum.record:
+			objectKeyword = 'record' + updatedObj[reportIDKey];
+			break;
+		default:
+			console.log('Unknown scope' + scope);
+	}
+
+	return 'scope' + scope + 'type' + type + 'object' + objectKeyword;
 }
 
-function folderRowClicked() {
-	console.log($(this));
+function logPendingChange(scope, type, updatedObj) {
+	var changeID = createChangeID(scope, type, updatedObj);
+
+	if (!pendingChanges[changeID])		
+		$('#save-counter').text(parseInt($('#save-counter').text()) + 1);
+
+	pendingChanges[changeID] = {
+		'editScope': scope,
+		'editOp': type,
+		'navfitNewData': JSON.stringify(updatedObj)
+	};
+
+	$('#save-btn').prop('disabled', false);
+	$('#save-counter').show();
+	
 }
 
 function createNewFolderMap(parentID) {
@@ -190,11 +220,13 @@ function createFolderElement(folderMap) {
 
       	$('#folder' + folderMap[folderIDKey] + 'interior').append(createFolderElement(newFolderMap))
 
+      	logPendingChange(EditScopeEnum.folder, EditOpEnum.new, newFolderMap);
+
       });
   	})(folderMap[folderIDKey], elementAdd, singleFolderElement);
 
   	//create delete element handler
-  	(function(folderID, element, containingDivToRemove){
+  	(function(folderID, element, containingDivToRemove, folderMap){
       element.click(function(e) {
       	e.stopPropagation();
 
@@ -218,8 +250,12 @@ function createFolderElement(folderMap) {
 
       	//Delete div for folder in question
       	containingDivToRemove.remove();
+
+      	logPendingChange(EditScopeEnum.folder, EditOpEnum.delete, folderMap);
+
+      	console.log(folderID);
       });
-  	})(folderMap[folderIDKey], elementDelete, singleFolderElement);
+  	})(folderMap[folderIDKey], elementDelete, singleFolderElement, folderMap);
 
 		folderTopBar.append(collapseButton);
 		folderTopBar.append(title);
@@ -304,8 +340,8 @@ function createReportElement(reportMap) {
 
       	//load report in detail view
 
-      	$('.detail-container').empty();
-      	showReportDetail();
+      	$('#detail-container').empty();
+      	showReportDetail(reportID);
   		});
     })(reportMap[reportIDKey], title);
 
@@ -444,10 +480,94 @@ function loadData(fileUUID, type, typeData) {
 
 }
 
+function executeNextChange(changeKeyArray) {
+	var currentKey = changeKeyArray.pop();
+
+	//If no more keys left, all changes have been processed
+	if (!currentKey) {
+		var keyCount = 0;
+		for (var key in pendingChanges) {
+			keyCount += 1;
+		}
+
+		if (keyCount > 0) {
+			$('#save-btn').prop('disabled', false);
+			showErrorAlertWithText(keyCount + " changes were unable to sync with server. Please try saving pending changes again.");
+		} else {
+			$('#save-btn').prop('disabled', true);
+			$('#save-counter').hide();
+			$('#save-counter').text(0);
+			showSuccessAlertWithText("All changes synced to server.");
+
+			setTimeout(successCloseButtonClicked, 5000);
+		}
+
+		$('#save-loader-aspect').hide();
+
+		return;
+	}
+
+	$.ajax({
+	  url: backendBaseURL + backendEditHandler,
+	  type: 'POST',
+	  data: {
+	  	'fileUUID': getUrlParameter(fileUUIDKey),
+	  	'editScope': parseInt(pendingChanges[currentKey][editScopeKey]) - 1,
+	  	'editOp': parseInt(pendingChanges[currentKey][editOpKey]),
+	  	'navfitNewData': pendingChanges[currentKey][newDataKey],
+	  },
+	  cache: false,
+	  success: function(data, textStatus, jqXHR)
+	  {
+	  	console.log(data);
+	  	if (data['Status'] == 0) {
+	  		console.log('success');
+	  		delete pendingChanges[currentKey];
+
+	  	} else {
+	  		$('#save-btn').prop('disabled', false);
+	  		showErrorAlertWithText(data['StatusData']);
+	  		$('#save-file-loader-aspect').hide();
+	  	}
+
+	  	$('#save-counter').text(parseInt($('#save-counter').text()) - 1);
+	  	executeNextChange(changeKeyArray);
+	  },
+	  error: function(jqXHR, textStatus, errorThrown)
+	  {
+	  	$('#save-btn').prop('disabled', false);
+	    showErrorAlertWithText(textStatus);
+	    $('#save-loader-aspect').show();
+	  },
+	  complete(jqXHR, textStatus) {
+	  	
+	  }
+	});
+}
+
+function executePendingChanges() {
+	$('#save-btn').prop('disabled', true);
+	$('#save-loader-aspect').show();
+
+	var pendingArray = [];
+	for (var key in pendingChanges) {
+		pendingArray.push(key);
+	}
+
+	executeNextChange(pendingArray);
+}
+
 $(document).ready(function() {
 	console.log(getUrlParameter(fileUUIDKey));
 
 	loadFoldersFromServer();
+
+	$("#save-btn").on('click', executePendingChanges);
+
+	$('#error-close-btn').click(errorCloseButtonClicked);
+	$('#success-close-btn').click(errorCloseButtonClicked);
+
+	$('#save-counter').text('0');
 });
 
 //https://stackoverflow.com/a/21903119/761902

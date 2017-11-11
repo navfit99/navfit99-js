@@ -1,14 +1,13 @@
-var backendBaseURL = 'https://fitrep.herokuapp.com/';
 //var backendBaseURL = 'http://localhost:8000/';
-var frontendBaseURL = '';
+var frontendBaseURL = 'http://localhost';
 
 $(window).on("load", function(){
 
 });
 
 $(document).ready(function() {
-	$('#import-form').prop('action', backendBaseURL + 'upload');
-	$('#edit-form').prop('action', frontendBaseURL + 'file');
+	$('#import-form').prop('action', backendBaseURL + '/upload');
+	$('#edit-form').prop('action', frontendBaseURL + '/file.html');
 	$('#edit-form').on('submit', editFormSubmitted);
 
 	$('#import-btn').click(importButtonClicked);
@@ -22,7 +21,6 @@ $(document).ready(function() {
 
 	$('#edit-submit-btn').click(editSubmitButtonClicked);
 
-	$('#error-close-btn').click(errorCloseButtonClicked);
 	$('#edit-close-btn').click(editCloseButtonClicked);
 
   $('#disclaimer-btn').click(hideDisclaimer);
@@ -37,11 +35,6 @@ function disableMainUI() {
 
 function enableMainUI() {
 	$('.action-btn').prop('disabled', false);
-}
-
-function showErrorAlertWithText(text) {
-	$('#error-alert').show();
-	$('#error-text').text(text);
 }
 
 function editFormSubmitted() {
@@ -66,7 +59,7 @@ function uploadFile() {
   });
 
   $.ajax({
-    url: backendBaseURL + 'upload',
+    url: backendBaseURL + '/upload',
     type: 'POST',
     data: data,
     cache: false,
@@ -79,7 +72,7 @@ function uploadFile() {
     	if (data['Status'] == 0) {
     		$('.action-btn:not(#import-btn)').removeClass('btn-primary btn-warning');
     		$('#import-btn').text("Loading");
-      	window.location.href = frontendBaseURL + 'file.html?uuid=' + data['StatusData'];      	
+      	window.location.href = frontendBaseURL + '/file.html?uuid=' + data['StatusData'];      	
     	} else {
     		enableMainUI();
     		showErrorAlertWithText(data['StatusData']);
@@ -122,7 +115,7 @@ function newFileButtonClicked() {
     	if (data['Status'] == 0) {
     		$('.action-btn:not(#new-file-btn)').removeClass('btn-primary btn-warning');
     		$('#new-file-btn').text("Loading");
-      	window.location.href = frontendBaseURL + 'file.html?uuid=' + data['StatusData'];      	
+      	window.location.href = frontendBaseURL + '/file.html?uuid=' + data['StatusData'];      	
     	} else {
     		enableMainUI();
     		showErrorAlertWithText(data['StatusData']);
@@ -155,10 +148,6 @@ function editSubmitButtonClicked() {
 function editCloseButtonClicked() {
 	enableMainUI();
 	$('#edit-alert').hide();
-}
-
-function errorCloseButtonClicked() {
-	$('#error-alert').hide();
 }
 
 function hideDisclaimer() {

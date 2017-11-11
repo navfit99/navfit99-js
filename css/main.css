@@ -53,25 +53,6 @@
 	display: none;
 }
 
-#loader {
-	position: relative;
-	top: 10%;
-	left: 10%;
-	height: 80%;
-	width: 80%;
-  border-top: 5px solid #FF7F2A;
-	border-right: 5px solid #3C3C3C;
-	border-bottom: 5px solid #FF7F2A;
-	border-left: 5px solid #3C3C3C;
-  border-radius: 50%;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 #edit-alert {
 	position: fixed;
 	top: 10px;

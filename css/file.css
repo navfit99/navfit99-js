@@ -1,3 +1,58 @@
+#save-btn {
+	position: relative;
+}
+
+#save-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}
+
+#save-counter {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translateY(-50%) translateX(50%);
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: red;
+	transition: all 1s;
+	display: none;
+}
+
+#export-btn {
+	position: relative;
+}
+
+#export-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}
+
+#delete-btn {
+	position: relative;
+}
+
+#delete-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}
+
 #content-container {
 	position:absolute;
 	height:100%;
@@ -19,6 +74,7 @@
 	margin-left: 30%;
 	height: 100%;
 	background-color: #aaaabb;
+	overflow-y: scroll;
 }
 
 .hierarchy-actions-button {
@@ -54,7 +110,6 @@
 	}
 
 	#detail-container {
-
 		margin-left: 0;
 		width: 100%;
 	}
