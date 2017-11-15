@@ -14,3 +14,7 @@
 .field-block>select {
 	width: 100%;
 }
+
+.field-block>label {
+	display: block;
+}

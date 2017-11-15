@@ -77,3 +77,5 @@ var reportBlk46Keys = [
 	'StatementYes',
 	'StatementNo'
 ];
+
+var reportBlkInputClass = 'report-input-element'; //hardcoded, only for reference

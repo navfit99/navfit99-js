@@ -1,6 +1,6 @@
-
 function appendRadioToElement(radioText, value, checked, enabled, element) {
 	var input = jQuery('<input/>', {
+		class: 'report-input-element',
 		'name': element.attr('id'),
 		type: 'radio',
 		value: value
@@ -13,7 +13,7 @@ function appendRadioToElement(radioText, value, checked, enabled, element) {
 		input.prop('disabled', true);
 	}
 
-	var inputLabel = jQuery('<p/>', {
+	var inputLabel = jQuery('<label/>', {
 		text: radioText
 	});
 
@@ -38,6 +38,7 @@ function appendSelectionOptionToElement(optionText, element) {
 
 function appendSelectionOptionsToElement(optionTextArray, element) {
 	var selectInput = jQuery('<select/>', {
+		class: 'report-input-element',
 		'name': element.attr('id'),
 	});
 
@@ -52,6 +53,7 @@ function appendSelectionOptionsToElement(optionTextArray, element) {
 
 function appendTextInputToElement(value, placeholder, enabled, element) {
 	var textInput = jQuery('<input/>', {
+		class: 'report-input-element',
 		'name': element.attr('id'),
 		type: 'text',
 		'placeholder': placeholder,
@@ -63,15 +65,18 @@ function appendTextInputToElement(value, placeholder, enabled, element) {
 	}
 
 	element.append(textInput);
+
+	return textInput;
 }
 
 function appendTextAreaToElement(value, placeholder, enabled, element) {
 	var textarea = jQuery('<textarea/>', {
+		class: 'report-input-element',
 		'name': element.attr('id'),
-		type: 'text',
 		'placeholder': placeholder,
-		value: value
 	});
+
+	textarea.val(value);
 
 	textarea.css('width','100%');
 
@@ -82,13 +87,17 @@ function appendTextAreaToElement(value, placeholder, enabled, element) {
 	element.append(textarea);
 }
 
-function appendCheckboxToElement(checkboxText, element) {
+function appendCheckboxToElement(checkboxText, checked, element) {
 	var input = jQuery('<input/>', {
+		class: 'report-input-element',
 		'name': element.attr('id'),
 		type: 'checkbox',
 	});
 
-	var inputLabel = jQuery('<p/>', {
+	if (checked)
+		input.prop('checked', true);
+
+	var inputLabel = jQuery('<label/>', {
 		text: checkboxText
 	});
 
@@ -97,7 +106,7 @@ function appendCheckboxToElement(checkboxText, element) {
 }
 
 function appendNewBlockToElement(blockMap, reportID, element) {
-	console.log(blockMap);
+	//console.log(blockMap);
 
 	var block = jQuery('<div/>', {
 		class: 'field-block col-sm-' + blockMap['colWidth'],
@@ -114,7 +123,7 @@ function appendNewBlockToElement(blockMap, reportID, element) {
 
 		//$('[name=block10]').is(':checked')
 		if (blockMap['checkbox']) {
-			appendCheckboxToElement(blockMap['checkbox'], block);
+			appendCheckboxToElement(blockMap['checkbox'], existingValue ? true : false, block);
 		}
 
 		//$('[name=block1]').val()
@@ -152,13 +161,17 @@ function appendNewBlockToElement(blockMap, reportID, element) {
 				break;
 
 			case 29:
-				appendTextInputToElement(reports[reportID][reportBlk29Keys[0]], 'Primary', true, block);
-				appendTextInputToElement(reports[reportID][reportBlk29Keys[1]], null, true, block);
+				var inputA = appendTextInputToElement(reports[reportID][reportBlk29Keys[0]], 'Primary', true, block);
+				inputA.attr('navfitFieldPart', 'a');
+				var inputB = appendTextInputToElement(reports[reportID][reportBlk29Keys[1]], null, true, block);
+				inputB.attr('navfitFieldPart', 'b');
 				break;
 
 			case 40:
-				appendTextInputToElement(reports[reportID][reportBlk40Keys[0]], 'Primary', true, block);
-				appendTextInputToElement(reports[reportID][reportBlk40Keys[1]], null, true, block);
+				var inputA = appendTextInputToElement(reports[reportID][reportBlk40Keys[0]], 'Primary', true, block);
+				inputA.attr('navfitFieldPart', 'a');
+				var inputB = appendTextInputToElement(reports[reportID][reportBlk40Keys[1]], null, true, block);
+				inputB.attr('navfitFieldPart', 'b');
 				break;
 
 			case 43:
@@ -200,6 +213,74 @@ function appendNewBlocksToElement(blockMapArray, reportID, element) {
 		appendNewBlockToElement(blockMapArray[i], reportID, element);
 	}
 }
+
+function modifyReportMapAndLogPendingChange(reportID, inputElement) {
+	var elementName = inputElement.attr('name');
+	var blockNumber = parseInt(elementName.substring(5, elementName.length));
+	switch(blockNumber) {
+		case 5:
+			var selectedRadio = parseInt(inputElement.val())-1;
+			for (var i = 0; i < reportBlk5Keys.length; i++) {
+				if (i == selectedRadio) {
+					reports[reportID][reportBlk5Keys[i]] = true;
+				} else {
+					reports[reportID][reportBlk5Keys[i]] = false;
+				}
+			}
+			break;
+		case 29:
+			var fieldPart = inputElement.attr('navfitFieldPart');
+			if (fieldPart == 'a') {
+				reports[reportID][reportBlk29Keys[0]] = inputElement.val();
+			} else if (fieldPart == 'b') {
+				reports[reportID][reportBlk29Keys[1]] = inputElement.val();
+			}
+			break;
+		case 40:
+			var fieldPart = inputElement.attr('navfitFieldPart');
+			if (fieldPart == 'a') {
+				reports[reportID][reportBlk40Keys[0]] = inputElement.val();
+			} else if (fieldPart == 'b') {
+				reports[reportID][reportBlk40Keys[1]] = inputElement.val();
+			}
+			break;
+		case 43:
+			var selectedRadio = inputElement.val();
+			for (var i = 0; i < reportBlk43Keys.length; i++) {
+				if (i == selectedRadio) {
+					reports[reportID][reportBlk43Keys[i]] = true;
+				} else {
+					reports[reportID][reportBlk43Keys[i]] = false;
+				}
+			}
+			break;
+		case 46:
+			var selectedRadio = inputElement.val();
+			for (var i = 0; i < reportBlk46Keys.length; i++) {
+				if (i == selectedRadio) {
+					reports[reportID][reportBlk46Keys[i]] = true;
+				} else {
+					reports[reportID][reportBlk46Keys[i]] = false;
+				}
+			}
+			break;
+		default:
+			if (inputElement.is('input[type=text]')) {
+				reports[reportID][reportBlkKeys[blockNumber-1]] = inputElement.val();
+			} else if (inputElement.is('textarea')) {
+				reports[reportID][reportBlkKeys[blockNumber-1]] = inputElement.val();
+			} else if (inputElement.is('input[type=checkbox]')) {
+				reports[reportID][reportBlkKeys[blockNumber-1]] = inputElement.is(':checked') ? true : false;
+			} else if (inputElement.is('input[type=radio]')) {
+				reports[reportID][reportBlkKeys[blockNumber-1]] = parseInt(inputElement.val())-1;
+			} else {
+				console.log('Unknown block number ' + blockNumber + ' element ' + inputElement);
+			}
+	}
+
+	logPendingChange(EditScopeEnum.report, EditOpEnum.update, reports[reportID]);
+}
+
 
 function showReportDetail(reportID) {
 	var reportPage = jQuery('<div/>', {
@@ -682,4 +763,35 @@ function showReportDetail(reportID) {
 
 
 	$('#detail-container').append(reportPage);
+
+	$('.report-input-element').change(function(e) {
+		console.log('change' + e.currentTarget.tagName);
+
+		if ($(e.currentTarget).is('input[type=radio]')) {
+			console.log('radio' + $(e.currentTarget).val());
+		} else if ($(e.currentTarget).is('input[type=checkbox]')) {
+			console.log('checkbox' + ($(e.currentTarget).is(':checked') ? true : false));
+		} else if ($(e.currentTarget).is('select')) {
+			console.log('select' + $(e.currentTarget).val());
+		} else {
+			$(e.currentTarget).trigger('input');
+			return;
+		}
+
+		modifyReportMapAndLogPendingChange(reportID, $(e.currentTarget));
+	});
+
+	$('.report-input-element').on('input', function(e) {
+		console.log('input' + e.currentTarget.tagName);
+
+		if ($(e.currentTarget).is('input[type=text]')) {
+			console.log('text' + $(e.currentTarget).val());
+		} else if ($(e.currentTarget).is('textarea')) {
+			console.log('textarea' + $(e.currentTarget).val());
+		} else {
+			console.log('Unknown element on input event ' + e + $(e.currentTarget).val());
+		}
+
+		modifyReportMapAndLogPendingChange(reportID, $(e.currentTarget));
+	});
 }

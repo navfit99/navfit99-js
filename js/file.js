@@ -1,7 +1,7 @@
 //var backendBaseURL = 'https://fitrep.herokuapp.com/';
 var folders = []; //array
 var reports = {}; //map
-var retrievedFolders = [];
+var retrievedFolders = []; //array of IDs
 
 var pendingChanges = {};
 
@@ -23,14 +23,16 @@ function createChangeID(scope, type, updatedObj) {
 		case EditScopeEnum.folder:
 			objectKeyword = 'folder' + updatedObj[folderIDKey];
 			break;
-		case EditScopeEnum.record:
-			objectKeyword = 'record' + updatedObj[reportIDKey];
+		case EditScopeEnum.report:
+			objectKeyword = 'report' + updatedObj[reportIDKey];
 			break;
 		default:
 			console.log('Unknown scope' + scope);
 	}
 
-	return 'scope' + scope + 'type' + type + 'object' + objectKeyword;
+	//return 'scope' + scope + 'type' + type + 'object' + objectKeyword;
+	//Type does not matter because operations of different types should overwrite each other. Latest operation for an ID takes precedence
+	return 'scope' + scope + 'object' + objectKeyword;
 }
 
 function logPendingChange(scope, type, updatedObj) {
@@ -64,6 +66,68 @@ function createNewFolderMap(parentID) {
 	newFolderMap[folderNameKey] = "new folder";
 
 	return newFolderMap;	
+}
+
+function createNewReportMap(parentID) {
+
+	var computeNewReportMap = function() {
+		console.log('callback');
+		//create new report once all folder reports have been downloaded
+		if (folders.length == retrievedFolders.length) {
+
+			//find the highest folderID existing
+			var highestReportID = 0;
+
+			for (var j in reports) {
+				console.log(reports[j][reportIDKey]);
+				if (reports[j][reportIDKey] > highestReportID)
+					highestReportID = reports[j][reportIDKey];
+			}
+
+			console.log(highestReportID);
+
+			var newReportMap = JSON.parse(blankReportString);
+			newReportMap[reportParentIDKey] = 'a ' + parentID;
+			newReportMap[reportIDKey] = highestReportID + 1;
+			newReportMap[folderNameKey] = 'new report ' + newReportMap[reportIDKey];
+
+
+			reports[newReportMap[reportIDKey]] = newReportMap;
+
+    	var singleReportElement = createReportElement(newReportMap);
+
+			var containingInterior = $('#reports-container');
+			containingInterior.append(singleReportElement);
+
+    	logPendingChange(EditScopeEnum.report, EditOpEnum.new, newReportMap);
+
+    	if ($('.folder-selected').length > 0)
+    		$('.folder-selected').removeClass('folder-selected');
+    	$('folderTitle' + parentID).addClass('folder-selected');
+    	$('#reports-container').empty();
+    	loadReportsForFolderFromServer(parentID, null);
+		}
+	}
+
+	//Get all folders' reports that have not been already retrieved. Need all reports to determine new reportID
+	var allFolderRetrieved = true;
+	for (var i = 0; i < folders.length; i++) {
+		var folderRetrieved = false;
+		for (var j = 0; j < retrievedFolders.length; j++) {
+			if (folders[i][folderIDKey] == retrievedFolders[j]) {
+				folderRetrieved = true;
+				break;
+			}
+		}
+
+		if (folderRetrieved == false) {
+			allFolderRetrieved = false;
+			loadReportsForFolderFromServer(folders[i][folderIDKey], computeNewReportMap);
+		}
+	}
+
+	if (allFolderRetrieved)
+		computeNewReportMap();
 }
 
 //Helper for getFolderChildIndicesFromArray()
@@ -131,6 +195,7 @@ function createFolderElement(folderMap) {
 		//Folder title span
 		var title = jQuery('<span/>', {
 			class: 'folder-title',
+			id: 'folderTitle' + folderMap[folderIDKey],
 			text: folderMap[folderNameKey],
 		});
 
@@ -201,15 +266,28 @@ function createFolderElement(folderMap) {
 
       	if ($('.folder-selected').length > 0)
       		$('.folder-selected').removeClass('folder-selected');
-      	element.addClass('folder-selected');
+      	$('#folderTitle' + folderID).addClass('folder-selected');
 
-      	loadReportsForFolderFromServer(folderID);
+      	loadReportsForFolderFromServer(folderID, null);
   		});
     })(folderMap[folderIDKey], title);
     
 
-		//create add element handler
-  	(function(parentID, element, containingDivToAddTo){
+    //create add report element handler
+  	(function(parentID, element){
+      element.click(function(e) {
+
+      	e.stopPropagation();
+
+      	//create new report struct and add in callback
+      	createNewReportMap(parentID);
+      	
+      });
+  	})(folderMap[folderIDKey], elementReportAdd);
+
+
+		//create add sub folder element handler
+  	(function(parentID, element){
       element.click(function(e) {
       	e.stopPropagation();
 
@@ -223,14 +301,14 @@ function createFolderElement(folderMap) {
       	logPendingChange(EditScopeEnum.folder, EditOpEnum.new, newFolderMap);
 
       });
-  	})(folderMap[folderIDKey], elementAdd, singleFolderElement);
+  	})(folderMap[folderIDKey], elementAdd);
 
   	//create delete element handler
-  	(function(folderID, element, containingDivToRemove, folderMap){
+  	(function(folderID, element, containingDivToRemove){
       element.click(function(e) {
       	e.stopPropagation();
 
-      	//Delete child folders
+      	//Delete child folders from view
       	var sortedChildIndices = getFolderChildIndicesFromArray(folderID).sort(function(a, b) {
       		return a - b;
       	});
@@ -243,6 +321,9 @@ function createFolderElement(folderMap) {
       	//Delete the folder in question
       	for (var i = 0; i < folders.length; i++) {
       		if (folders[i][folderIDKey] == folderID) {
+
+      			logPendingChange(EditScopeEnum.folder, EditOpEnum.delete, folders[i]);
+
       			folders.remove(i, i);
       			break;
       		}
@@ -251,11 +332,9 @@ function createFolderElement(folderMap) {
       	//Delete div for folder in question
       	containingDivToRemove.remove();
 
-      	logPendingChange(EditScopeEnum.folder, EditOpEnum.delete, folderMap);
-
       	console.log(folderID);
       });
-  	})(folderMap[folderIDKey], elementDelete, singleFolderElement, folderMap);
+  	})(folderMap[folderIDKey], elementDelete, singleFolderElement);
 
 		folderTopBar.append(collapseButton);
 		folderTopBar.append(title);
@@ -342,6 +421,8 @@ function createReportElement(reportMap) {
 
       	$('#detail-container').empty();
       	showReportDetail(reportID);
+
+
   		});
     })(reportMap[reportIDKey], title);
 
@@ -349,6 +430,11 @@ function createReportElement(reportMap) {
   	(function(reportID, element, containingDivToRemove){
       element.click(function(e) {
       	e.stopPropagation();
+
+      	var blankReportMap = JSON.parse(blankReportString);
+      	blankReportMap[reportIDKey] = reportID;
+
+      	logPendingChange(EditScopeEnum.report, EditOpEnum.delete, blankReportMap);
 
       	delete reports[reportID];
 
@@ -407,14 +493,15 @@ function processReports(data) {
 }
 
 function loadFoldersFromServer() {
-	loadData(getUrlParameter(fileUUIDKey), 1, null);
+	loadData(getUrlParameter(fileUUIDKey), 1, null, null);
 }
 
-function loadReportsForFolderFromServer(folderID) {
+function loadReportsForFolderFromServer(folderID, callback) {
 	$('#reports-container').empty();
 
 	for (var i = 0; i < retrievedFolders.length; i++) {
 		if (retrievedFolders[i] == folderID) {
+			console.log(folderID + ' already retrieved');
 			for (var j in reports) {
 				if (parseInt(reports[j][reportParentIDKey].split(" ")[1]) == folderID) {
 					var singleReportElement = createReportElement(reports[j]);
@@ -427,10 +514,10 @@ function loadReportsForFolderFromServer(folderID) {
 		}
 	}
 
-	loadData(getUrlParameter(fileUUIDKey), 3, folderID);
+	loadData(getUrlParameter(fileUUIDKey), 3, folderID, callback);
 }
 
-function loadData(fileUUID, type, typeData) {
+function loadData(fileUUID, type, typeData, callback) {
 	/*
 	disableMainUI();
 	$('#new-file-loader-aspect').show();
@@ -474,7 +561,10 @@ function loadData(fileUUID, type, typeData) {
       $('#new-file-loader-aspect').hide();
     },
     complete(jqXHR, textStatus) {
-    	
+    	if (callback)
+    		callback();
+
+    	console.log(callback);
     }
 	});
 
@@ -523,14 +613,12 @@ function executeNextChange(changeKeyArray) {
 	  	if (data['Status'] == 0) {
 	  		console.log('success');
 	  		delete pendingChanges[currentKey];
-
+	  		$('#save-counter').text(parseInt($('#save-counter').text()) - 1);
 	  	} else {
 	  		$('#save-btn').prop('disabled', false);
 	  		showErrorAlertWithText(data['StatusData']);
 	  		$('#save-file-loader-aspect').hide();
 	  	}
-
-	  	$('#save-counter').text(parseInt($('#save-counter').text()) - 1);
 	  	executeNextChange(changeKeyArray);
 	  },
 	  error: function(jqXHR, textStatus, errorThrown)
@@ -557,10 +645,20 @@ function executePendingChanges() {
 	executeNextChange(pendingArray);
 }
 
+function setupShareButton() {
+	$('#send-link-btn').prop('disabled', false);
+
+	$('#send-link-btn').click(function(e) {
+		console.log('share clocked');
+	});
+}
+
 $(document).ready(function() {
 	console.log(getUrlParameter(fileUUIDKey));
 
 	loadFoldersFromServer();
+
+	setupShareButton();
 
 	$("#save-btn").on('click', executePendingChanges);
 
