@@ -33,3 +33,47 @@
     	min-width: 90%;
     }
 }
+
+#warn-alert {
+	position: fixed;
+	top: 10px;
+	margin:auto;
+	width: 50%;
+	min-width: 375px;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+#warn-link {
+	width: 100%;
+}
+
+@media screen and (max-width: 480px) {
+    #warn-alert {
+    	min-width: 90%;
+    }
+}
+
+#textarea-alert {
+	position: fixed;
+	top: 10px;
+	margin:auto;
+	width: 50%;
+	min-width: 375px;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	display: none;
+}
+
+#textarea-data {
+	width: 100%;
+}
+
+@media screen and (max-width: 480px) {
+    #textarea-alert {
+    	min-width: 90%;
+    }
+}

@@ -35,6 +35,20 @@ function createChangeID(scope, type, updatedObj) {
 	return 'scope' + scope + 'object' + objectKeyword;
 }
 
+function reloadUIForFolderOrReport(object) {
+	if (object[folderIDKey] != null) { //update for Folder
+		loadFoldersFromServer();
+		loadReportsForFolderFromServer(object[folderIDKey], null);
+	} else if (object[reportIDKey] != null) {
+		var parentFolderID = parseInt(object[reportParentIDKey].split(" ")[1]);
+		loadReportsForFolderFromServer(parentFolderID, null);
+		console.log(reports[object[reportIDKey]]);
+		showReportDetail(object[reportIDKey]);
+	} else {
+		loadFoldersFromServer();
+	}
+}
+
 function logPendingChange(scope, type, updatedObj) {
 	var changeID = createChangeID(scope, type, updatedObj);
 
@@ -50,6 +64,7 @@ function logPendingChange(scope, type, updatedObj) {
 	$('#save-btn').prop('disabled', false);
 	$('#save-counter').show();
 	
+	reloadUIForFolderOrReport(updatedObj);
 }
 
 function createNewFolderMap(parentID) {
@@ -66,6 +81,28 @@ function createNewFolderMap(parentID) {
 	newFolderMap[folderNameKey] = "new folder";
 
 	return newFolderMap;	
+}
+
+function retrieveAllFolders(callback) {
+	//Get all folders' reports that have not been already retrieved. Need all reports to determine new reportID
+	var allFolderRetrieved = true;
+	for (var i = 0; i < folders.length; i++) {
+		var folderRetrieved = false;
+		for (var j = 0; j < retrievedFolders.length; j++) {
+			if (folders[i][folderIDKey] == retrievedFolders[j]) {
+				folderRetrieved = true;
+				break;
+			}
+		}
+
+		if (folderRetrieved == false) {
+			allFolderRetrieved = false;
+			loadReportsForFolderFromServer(folders[i][folderIDKey], callback);
+		}
+	}
+
+	if (allFolderRetrieved)
+		callback();
 }
 
 function createNewReportMap(parentID) {
@@ -109,25 +146,7 @@ function createNewReportMap(parentID) {
 		}
 	}
 
-	//Get all folders' reports that have not been already retrieved. Need all reports to determine new reportID
-	var allFolderRetrieved = true;
-	for (var i = 0; i < folders.length; i++) {
-		var folderRetrieved = false;
-		for (var j = 0; j < retrievedFolders.length; j++) {
-			if (folders[i][folderIDKey] == retrievedFolders[j]) {
-				folderRetrieved = true;
-				break;
-			}
-		}
-
-		if (folderRetrieved == false) {
-			allFolderRetrieved = false;
-			loadReportsForFolderFromServer(folders[i][folderIDKey], computeNewReportMap);
-		}
-	}
-
-	if (allFolderRetrieved)
-		computeNewReportMap();
+	retrieveAllFolders(computeNewReportMap);
 }
 
 //Helper for getFolderChildIndicesFromArray()
@@ -245,10 +264,10 @@ function createFolderElement(folderMap) {
 		var elementDelete = jQuery('<li/>', {
 			class: 'btn-danger'
 		});
-		elementDelete.html('<span class="glyphicon glyphicon-trash" aria-hidden="false"></span><span class="glyphicon glyphicon-folder-close" aria-hidden="false"></span> Delete');
+		elementDelete.html('<span class="glyphicon glyphicon-trash" aria-hidden="false"></span> Delete');
 
 		var elementHandle = jQuery('<span/>', {
-			class: 'elementHandle ' + 'folder' + folderMap[folderIDKey] + 'handle'
+			class: 'elementHandle' + 'folder' + folderMap[folderIDKey] + 'handle'
 		});
 		elementHandle.html('<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>')
 
@@ -258,7 +277,6 @@ function createFolderElement(folderMap) {
 			id: 'folder' + folderMap[folderIDKey] + 'interior'
 		});
 
-		
 		//create folder title click element
   	(function(folderID, element){
       element.click(function(e) {
@@ -402,11 +420,17 @@ function createReportElement(reportMap) {
 			class: 'dropdown-menu'
 		});
 
+		//Edit raw JSON
+		var elementRaw = jQuery('<li/>', {
+			class: 'btn-warning'
+		});
+		elementRaw.html('<span class="glyphicon glyphicon-pencil" aria-hidden="false"></span> Edit Raw JSON Data');
+
 		//Delete report icon
 		var elementDelete = jQuery('<li/>', {
 			class: 'btn-danger'
 		});
-		elementDelete.html('<span class="glyphicon glyphicon-trash" aria-hidden="false"></span><span class="glyphicon glyphicon-list-alt" aria-hidden="false"></span> Delete');
+		elementDelete.html('<span class="glyphicon glyphicon-trash" aria-hidden="false"></span> Delete');
 
 		//create report title click element
   	(function(reportID, element){
@@ -419,12 +443,35 @@ function createReportElement(reportMap) {
 
       	//load report in detail view
 
-      	$('#detail-container').empty();
+      	
       	showReportDetail(reportID);
 
 
   		});
     })(reportMap[reportIDKey], title);
+
+    //create 'edit raw json' element handler
+  	(function(reportID, element){
+      element.click(function(e) {
+      	e.stopPropagation();
+
+      	showTextAreaAlertWithTextWithData(reports[reportID][reportNameKey] + ' JSON data: ', JSON.stringify(reports[reportID], null, 2));
+
+      	$('#textarea-save-btn').click(function(e) {
+      		try {
+      			var updatedReport = JSON.parse($('#textarea-data').val());
+      			reports[reportID] = updatedReport;
+      			textAreaCloseButtonClicked();
+
+      			logPendingChange(EditScopeEnum.report, EditOpEnum.update, reports[reportID]);
+      			reloadUIForFolderOrReport(reports[reportID]);
+      		} catch(e) {
+      			alert(e);
+      		}
+      	});
+
+      });
+  	})(reportMap[reportIDKey], elementRaw);
 
   	//create delete element handler
   	(function(reportID, element, containingDivToRemove){
@@ -445,7 +492,7 @@ function createReportElement(reportMap) {
 
 		reportTopBar.append(title, jQuery('<br/>'), comment);
 
-		actionList.append(elementDelete);
+		actionList.append(elementRaw, elementDelete);
 		actionsDropdownGroup.append(actionsDropdownBtn);
 		actionsDropdownGroup.append(actionList);
 
@@ -460,6 +507,9 @@ function processFolders(data) {
 	folders = data;
 
 	console.log(data);
+
+	$('#folders-container').empty();
+
 	for (var i = 0; i < data.length; i++) {
 		var folderMap = data[i];
 
@@ -493,6 +543,12 @@ function processReports(data) {
 }
 
 function loadFoldersFromServer() {
+	if (folders.length > 0) {
+		console.log('folders already loaded from server');
+		processFolders(folders);
+		return;
+	}
+
 	loadData(getUrlParameter(fileUUIDKey), 1, null, null);
 }
 
@@ -523,10 +579,20 @@ function loadData(fileUUID, type, typeData, callback) {
 	$('#new-file-loader-aspect').show();
 	*/
 
+	var editorID;
+	var authToken;
+	var authStruct = getAuthStruct(false);
+	if (authStruct) {
+		editorID = authStruct.editorID;
+		authToken = authStruct.authToken;
+	}
+
   $.ajax({
     url: backendBaseURL + backendFileHandler,
     type: 'POST',
     data: {
+    	'editorID': editorID,
+    	'authToken': authToken,
     	'fileUUID': fileUUID,
     	'type': type,
     	'typeData': typeData
@@ -597,10 +663,20 @@ function executeNextChange(changeKeyArray) {
 		return;
 	}
 
+	var editorID;
+	var authToken;
+	var authStruct = getAuthStruct(true);
+	if (authStruct) {
+		editorID = authStruct.editorID;
+		authToken = authStruct.authToken;
+	}
+
 	$.ajax({
 	  url: backendBaseURL + backendEditHandler,
 	  type: 'POST',
 	  data: {
+	  	'editorID': editorID,
+    	'authToken': authToken,
 	  	'fileUUID': getUrlParameter(fileUUIDKey),
 	  	'editScope': parseInt(pendingChanges[currentKey][editScopeKey]) - 1,
 	  	'editOp': parseInt(pendingChanges[currentKey][editOpKey]),
@@ -645,11 +721,95 @@ function executePendingChanges() {
 	executeNextChange(pendingArray);
 }
 
-function setupShareButton() {
-	$('#send-link-btn').prop('disabled', false);
+function executeDeleteNavFit() {
+	disableMainUI();
+	$('#delete-loader-aspect').show();
 
-	$('#send-link-btn').click(function(e) {
-		console.log('share clocked');
+	var editorID;
+	var authToken;
+	var authStruct = getAuthStruct(true);
+	if (authStruct) {
+		editorID = authStruct.editorID;
+		authToken = authStruct.authToken;
+	}
+
+	$.ajax({
+	  url: backendBaseURL + backendEditHandler,
+	  type: 'POST',
+	  data: {
+	  	'editorID': editorID,
+    	'authToken': authToken,
+	  	'fileUUID': getUrlParameter(fileUUIDKey),
+	  	'editScope': EditScopeEnum.navfit - 1,
+	  	'editOp': EditOpEnum.delete,
+	  },
+	  cache: false,
+	  success: function(data, textStatus, jqXHR)
+	  {
+	  	console.log(data);
+	  	if (data['Status'] == 0) {
+	  		console.log('success');
+	  		$('#delete-loader-aspect').hide();
+	  		showSuccessAlertWithText(data['StatusData'] + ' Hang tight...');
+	  		
+	  		if (authStruct)
+	  			document.location.replace(frontendUserNavfitListHandler);
+	  		else
+	  			document.location.replace('/');
+	  	} else {
+	  		enableMainUI();
+	  		showErrorAlertWithText(data['StatusData']);
+	  		$('#delete-loader-aspect').hide();
+	  	}
+
+	  	
+	  },
+	  error: function(jqXHR, textStatus, errorThrown)
+	  {
+	  	enableMainUI();
+	    showErrorAlertWithText(textStatus);
+	    $('#delete-loader-aspect').hide();
+	  },
+	  complete(jqXHR, textStatus) {
+	  	
+	  }
+	});
+}
+
+function showCurrentLocalNavFitJSON() {
+	$('#textarea-save-btn').prop('disabled', false);
+	retrieveAllFolders(function() {
+		var currentNavFit = {'folders' : folders, 'reports' : reports};
+
+		showTextAreaAlertWithTextWithData('NAVFIT JSON data: ', JSON.stringify(currentNavFit, null, 2));
+
+		$('#textarea-save-btn').click(function(e) {
+			$('#textarea-save-btn').prop('disabled', true);
+
+  		try {
+  			var updatedNavFit = JSON.parse($('#textarea-data').val());
+  			
+  			if (updatedNavFit['reports'] == null || updatedNavFit['folders'] == null)
+  				throw 'Updated NAVFIT data missing folders and reports keys.';
+
+  			folders = updatedNavFit['folders'];
+  			reports = updatedNavFit['reports'];
+
+  			textAreaCloseButtonClicked();
+
+  			var pendingChangeData = {'folders' : folders, 'reports' : []};
+  			for (reportKey in reports) {
+  				pendingChangeData['reports'].push(reports[reportKey]);
+  			}
+
+  			logPendingChange(EditScopeEnum.navfit, EditOpEnum.update, pendingChangeData);
+  			reloadUIForFolderOrReport({});
+  		} catch(e) {
+  			alert(e);
+  			$('#textarea-save-btn').prop('disabled', false);
+  		}
+  		
+  	});
 	});
 }
 
@@ -658,28 +818,22 @@ $(document).ready(function() {
 
 	loadFoldersFromServer();
 
+	setupUserNavfitListButton();
+
+	setupNavFitJSONButton();
+
+	setupExportButton();
+
 	setupShareButton();
+
+	setupDeleteNavFitButton();
+
+	setupDisclaimer(false);
 
 	$("#save-btn").on('click', executePendingChanges);
 
 	$('#error-close-btn').click(errorCloseButtonClicked);
-	$('#success-close-btn').click(errorCloseButtonClicked);
+	$('#success-close-btn').click(successCloseButtonClicked);
 
 	$('#save-counter').text('0');
 });
-
-//https://stackoverflow.com/a/21903119/761902
-var getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-};

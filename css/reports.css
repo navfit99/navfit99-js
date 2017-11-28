@@ -1,10 +1,14 @@
-#reports-container {
+#reports-container-area {
 	position: relative;
 	background: #888;
-	overflow-y: scroll;
 	height: 50%;
 	width: 100%;
 	float:left;
+}
+
+#reports-container {
+	position: relative;
+	overflow-y: scroll;
 }
 
 .report-row {

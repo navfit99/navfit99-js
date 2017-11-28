@@ -1,0 +1,19 @@
+#filelist-container {
+	position: relative;
+}
+
+#filelist-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 100px;
+	height: 100px;
+	display: none;
+}
+
+.filelist-btn {
+	width: 100%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

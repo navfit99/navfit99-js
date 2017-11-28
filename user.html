@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NAVFIT99</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+  
+  <link href="css/generalElements.css" rel="stylesheet">
+  <link href="css/generalAlerts.css" rel="stylesheet">
+  <link href="css/user.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <link href="css/buttonBar.css" rel="stylesheet">
+
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/upload-navfit.js"></script>
+	<script type="text/javascript" src="js/new-navfit.js"></script>
+	<script type="text/javascript" src="js/sharedButtonSetup.js"></script>
+
+	<script type="text/javascript" src="js/alerts.js"></script>
+	<script type="text/javascript" src="js/user.js"></script>
+	<!--
+	<script type="text/javascript" src="js/folders.js"></script>
+	<script type="text/javascript" src="js/reports.js"></script-->
+</head>
+<body>
+	<div style="position:absolute;width:100%;height:100%;">
+
+	<nav class="navbar navbar-default" style="z-index:10;">
+
+				<div class="logo-64">
+					<h6 class="title-64">NAVFIT99</h6>
+				</div>
+			
+				<div class="button-bar">
+					<button disabled type="button" class="btn btn-default action-btn" id="import-btn"><span class="glyphicon glyphicon-cloud-upload" aria-hidden="false"></span> Import<div id="import-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="new-file-btn"><span class="glyphicon glyphicon-flash" aria-hidden="false"></span> New NAVFIT<div id="new-file-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="edit-btn"><span class="glyphicon glyphicon-edit" aria-hidden="false"></span> Edit</button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="logout-btn"><i class="fa fa-moon-o" aria-hidden="true"></i> Logout<div id="logout-loader-aspect"><div id="loader"></div></div></button>
+			  </div>
+
+	</nav>
+
+	<!-- Error alert elements -->
+	<div class="alert alert-danger alert-dismissible" id="error-alert" role="alert">
+		<button type="button" class="close" id="error-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<p id="error-text"></p>
+	</div>
+
+		<!-- Success alert elements -->
+	<div class="alert alert-success alert-dismissible" id="success-alert" role="alert">
+		<button type="button" class="close" id="success-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<p id="success-text"></p>
+	</div>
+
+		<!-- Import elements -->
+		<div class="alert alert-info" id="import-alert" role="alert">
+			<form method="post" enctype="multipart/form-data" id="import-form">
+				<input id="file-input" type="file" name="file" size="60" />
+				<input type="submit" value="Upload" />
+			</form>
+		</div>
+
+			<!-- Edit elements -->
+	<div class="alert alert-warning alert-dismissible" id="edit-alert" role="alert">
+		<button type="button" class="close" id="edit-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<form method="get" id="edit-form">
+			<strong><p>Paste previously created NAVFIT ID</p></strong>
+			<input id="edit-uuid-text" type="text" name="fileUUID" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" /><br/><br/>
+			<input id="edit-submit-btn" type="submit" class="btn btn-primary" id="disclaimer-btn" value="Edit NAVFIT"/>
+		</form>
+	</div>
+
+	<div class="container" id="filelist-container" >
+		<div class="row">
+			<div class="col-md-12">
+				<div id="filelist">
+					<h2>Getting NAVFITs</h2>
+				</div>
+			</div>
+		</div>
+		<div id="filelist-loader-aspect"><div id="loader"></div></div>
+	</div>
+</div>
+
+</body>
+</html>

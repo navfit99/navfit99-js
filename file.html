@@ -4,20 +4,28 @@
 	<title>NAVFIT99</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+
   <link href="css/generalElements.css" rel="stylesheet">
   <link href="css/generalAlerts.css" rel="stylesheet">
   <link href="css/file.css" rel="stylesheet">
   <link href="css/folders.css" rel="stylesheet">
   <link href="css/reports.css" rel="stylesheet">
   <link href="css/report-detail.css" rel="stylesheet">
+  <link href="css/buttonBar.css" rel="stylesheet">
 
 	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/sharedButtonSetup.js"></script>
+	<script type="text/javascript" src="js/disclaimer.js"></script>
 	<script type="text/javascript" src="js/file.js"></script>
 	<script type="text/javascript" src="js/alerts.js"></script>
 	<script type="text/javascript" src="js/report-detail.js"></script>
+	<script type="text/javascript" src="js/report-detail-utilities.js"></script>
 	<script type="text/javascript" src="js/report-keys-constants.js"></script>
+		<script type="text/javascript" src="js/fitrep-detail.js"></script>
+		<script type="text/javascript" src="js/chief-detail.js"></script>
 	<!--
 	<script type="text/javascript" src="js/folders.js"></script>
 	<script type="text/javascript" src="js/reports.js"></script-->
@@ -32,9 +40,13 @@
 				</div>
 			
 				<div class="button-bar">
-			    <button disabled type="button" class="btn btn-warning action-btn" id="save-btn"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="false"></span><div id="save-loader-aspect"><div id="loader"></div></div><div id="save-counter"></div></button>
-			    <button disabled type="button" class="btn btn-warning action-btn" id="export-btn"><span class="glyphicon glyphicon-save" aria-hidden="false"></span><div id="export-loader-aspect"><div id="loader"></div></div></button>
-			    <button disabled type="button" class="btn btn-info action-btn" id="send-link-btn"><span class="glyphicon glyphicon-send" aria-hidden="false"></span></button>
+					<button disabled type="button" class="btn btn-primary action-btn" id="user-btn"><span class="glyphicon glyphicon-chevron-left" aria-hidden="false"></span> NAVFITs <span class="glyphicon glyphicon-list" aria-hidden="false"></span><div id="user-loader-aspect"><div id="loader"></div></div></button>
+
+			    <button disabled type="button" class="btn btn-primary action-btn" id="save-btn"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="false"></span><div id="save-loader-aspect"><div id="loader"></div></div><div id="save-counter"></div></button>
+			    <button disabled type="button" class="btn btn-warning action-btn" id="navfit-json-btn"><i class="fa fa-code" aria-hidden="true"></i><div id="navfit-json-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="export-btn"><span class="glyphicon glyphicon-cloud-download" aria-hidden="false"></span><div id="export-loader-aspect"><div id="loader"></div></div></button>
+
+			    <button disabled type="button" class="btn btn-default action-btn" id="send-link-btn"><span class="glyphicon glyphicon-send" aria-hidden="false"></span></button>
 			    <button disabled type="button" class="btn btn-danger action-btn" id="delete-btn"><span class="glyphicon glyphicon-trash" aria-hidden="false"></span><div id="delete-loader-aspect"><div id="loader"></div></div></button>
 			  </div>
 
@@ -56,12 +68,34 @@
 		<p id="success-text"></p>
 	</div>
 
+	<!-- Warn alert elements -->
+	<div class="alert alert-warning alert-dismissible" id="warn-alert" role="alert">
+		<button type="button" class="close" id="warn-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<p id="warn-text"></p>
+		<input readonly="readonly" type="text" id="warn-link"></input>
+	</div>
+
+	<!-- Text area alert elements -->
+	<div class="alert alert-warning alert-dismissible" id="textarea-alert" role="alert">
+		<button type="button" class="close" id="textarea-close-btn" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+		<p id="textarea-text"></p>
+		<textarea type="text" id="textarea-data"></textarea>
+		<button type="button" type="button" class="btn btn-primary" id="textarea-save-btn">Validate JSON and Apply</button>
+	</div>
+
+	<!-- content structure -->
 	<div class="" id="content-container" >
 		<div class="" id="hierarchy-container">
-			<div id="folders-container">
+			<div id="folders-container-area">
+				<div id="folders-container"></div>
 				<div id="folders-background">Folders</div>
 			</div>
-			<div id="reports-container">
+			<div id="reports-container-area">
+				<div id="reports-container"></div>
 				<div id="reports-background">Reports</div>
 			</div>
 		</div>
@@ -70,6 +104,21 @@
 		</div>
 	</div>
 </div>
+
+	<!-- Disclaimer -->
+	<div class="alert alert-warning disclaimer" role="alert">
+		<h3>NOTICE AND DISCLAIMER</h3>
+		<p>This a web demo of NAVFIT99, an open source project. </p>
+		<p>USE OF THIS WEBSITE IS AT YOUR OWN RISK. Transmission and storage of data on the internet is inherently insecure. </p>
+		<p>You accept all responsibility for using this website. </p>
+		<p>You can try out NAVFIT99 on this website by uploading a NAVFIT database with dummy information.</p>
+		<p>Sending and entering sensitive data on this website is discouraged. You are free to download, view the code of, and run NAVFIT99 on your own private environment. </p>
+		<p> NAVFIT99 is released under <a href="assets/LICENSE.txt" class="alert-link">MIT License</a>. </p>
+		<p>NAVFIT99 IS NOT AFFILIATED OR ENDORSED BY THE U.S. NAVY or U.S. GOVERNMENT. For information regarding NAVFIT98A, <a href="http://www.public.navy.mil/bupers-npc/career/performanceevaluation/pages/softwareforms.aspx" class="alert-link">click here.</a></p>
+		<p>If you do not agree to the above notice and disclaimer, do not use this website. </p>
+		<br/>
+		<button type="button" class="btn btn-primary" id="disclaimer-btn">I Agree</button>
+	</div>
 
 </body>
 </html>

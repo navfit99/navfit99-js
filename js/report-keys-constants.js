@@ -48,6 +48,7 @@ var reportBlkKeys = [
 	'RSInfo'
 ];
 
+//Individual service type
 var reportBlk5Keys = [
 	'Active',
 	'TAR',
@@ -55,16 +56,19 @@ var reportBlk5Keys = [
 	'ATADSW'
 ];
 
+//Pri/collateral duties
 var reportBlk29Keys = [
 	'PrimaryDuty',
 	'Duties'
 ];
 
+//Recommend for next career milestone
 var reportBlk40Keys = [
 	'RecommendA',
 	'RecommendB'
 ];
 
+//Summary numbers
 var reportBlk43Keys = [
 	'SummarySP',
 	'SummaryProg',
@@ -73,9 +77,12 @@ var reportBlk43Keys = [
 	'SummaryEP'
 ];
 
+//Signature of individual evaluated plus check whether statementd
 var reportBlk46Keys = [
 	'StatementYes',
 	'StatementNo'
 ];
 
 var reportBlkInputClass = 'report-input-element'; //hardcoded, only for reference
+
+var reportTypeKey = 'ReportType'; //FitRep, Eval, Chief

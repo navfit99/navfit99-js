@@ -1,3 +1,12 @@
+.metadata-row {
+	display: block;
+	padding: 10px;
+	background-color: #FFEEBC;
+}
+.metadata-row>label {
+	margin: 0px;
+}
+
 .fields-row {
 	display: block;
 }
@@ -16,5 +25,5 @@
 }
 
 .field-block>label {
-	display: block;
+	display: block; /* keep each radio button and label on separate line */
 }

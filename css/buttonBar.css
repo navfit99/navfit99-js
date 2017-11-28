@@ -1,0 +1,80 @@
+.action-btn {
+	margin: 15px 5px 15px 5px;
+}
+
+#logout-btn {
+	position: relative;
+	display: none;
+}
+
+#logout-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}
+
+#login-btn {
+	position: relative;
+	display: none;
+}
+
+#login-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+
+	/*-ms-transform: translateY(-50%) translateX(-50%);*/
+}
+
+#user-btn {
+	position: relative;
+	display: none;
+}
+
+#user-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}
+
+#import-btn {
+	position: relative;
+}
+
+#import-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+
+	/*-ms-transform: translateY(-50%) translateX(-50%);*/
+}
+
+#new-file-btn {
+	position: relative;
+}
+
+#new-file-loader-aspect {
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+	width: 20px;
+	height: 20px;
+	display: none;
+}

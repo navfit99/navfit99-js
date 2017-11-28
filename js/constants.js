@@ -1,14 +1,38 @@
 var fileUUIDKey = 'uuid';
 
+//auth parameter names for auth server
+var urlEditorIDKey = 'user';
+var urlAuthTokenKey = 'token';
+
+//auth parameter names for navfit data server and js code
+var editorIDKey = 'editorID';
+var authTokenKey = 'authToken';
+
+var authBaseURL = 'https://runs.io';
+var authVerifyHandler = '/verify';
+var authLogoutHandler = '/logout';
+
 var backendBaseURL = 'http://localhost:8000';
 var backendFileHandler = '/file';
 var backendFileUUIDKey = 'fileUUID';
-
 
 var backendEditHandler = '/edit';
 var editScopeKey = 'editScope';
 var editOpKey = 'editOp';
 var newDataKey = 'navfitNewData';
+
+var backendEditorHandler = '/editor';
+var backendUploadHandler = '/upload';
+var backendNewFileHandler = '/newFile';
+var backendDownloadHandler = '/download';
+
+
+var frontendUserNavfitListHandler = '/user.html';
+var frontendFileHandler = '/file.html';
+
+//UI storage var
+var disclaimerKey = 'disclaimer';
+
 
 var folderNameKey = 'FolderName';
 var folderIDKey = 'FolderID';
@@ -36,6 +60,7 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
+//EditScopeEnum constant values are offset by 1, minus 1 when using them
 var EditScopeEnum = {
 	navfit : 1,
 	folder : 2,
@@ -47,3 +72,76 @@ var EditOpEnum = {
 	update : 2,
 	delete : 3
 }
+
+function getAuthStruct(silent) {
+	var storedEditorID = getUrlParameter(urlEditorIDKey);
+	var storedAuthToken = getUrlParameter(urlAuthTokenKey);
+
+	if (storedEditorID === undefined || storedAuthToken === undefined) {
+		storedEditorID = sessionStorage.getItem(urlEditorIDKey);
+		storedAuthToken = sessionStorage.getItem(urlAuthTokenKey);
+		if (storedEditorID == null || storedAuthToken == null) {
+			if (silent == false)
+				showErrorAlertWithText('You are not logged in. Any NAVFITS you edit will be public.');
+			return null;
+		}
+	} else {
+		sessionStorage.setItem(urlEditorIDKey, storedEditorID);
+		sessionStorage.setItem(urlAuthTokenKey, storedAuthToken);
+		document.location.replace(document.location.protocol + '//' + document.location.host + document.location.pathname);
+	}
+
+	return {editorID: storedEditorID, authToken: storedAuthToken};
+}
+
+function checkAuthStruct(authStruct, callback) {
+	if (authStruct) {
+			$.ajax({
+	    url: backendBaseURL + backendEditorHandler,
+	    type: 'POST',
+	    data: {
+	    	'editorID': authStruct.editorID,
+	    	'authToken': authStruct.authToken
+	    },
+	    cache: false,
+	    success: function(data, textStatus, jqXHR)
+	    {
+	    	console.log(data);
+	    	if (data['Status'] == 0) {
+	    		if (callback)
+	      		callback(true);
+	    	} else {
+	    		if (callback)
+	      		callback(false);
+	    	}
+	    },
+	    error: function(jqXHR, textStatus, errorThrown)
+	    {
+	      if (callback)
+	      	callback(false);
+	    },
+	    complete(jqXHR, textStatus) {
+	    }
+		});
+		} else {
+			if (callback)
+				callback(false);
+		}
+}
+
+
+//https://stackoverflow.com/a/21903119/761902
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};

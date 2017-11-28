@@ -1,11 +1,14 @@
-#folders-container {
+#folders-container-area {
 	position: relative;
 	background: #aaa;
-	overflow-y: scroll;
 	height: 50%;
 	width: 100%;
 	float:left;
+}
 
+#folders-container {
+	position: relative;
+	overflow-y: scroll;
 }
 
 .folder-row {

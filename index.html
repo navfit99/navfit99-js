@@ -4,13 +4,23 @@
 	<title>NAVFIT99</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/font-awesome.min.css" rel="stylesheet">
+
   <link href="css/generalElements.css" rel="stylesheet">
   <link href="css/generalAlerts.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
+  <link href="css/buttonBar.css" rel="stylesheet">
 	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script src="js/jq-ajax-progress.min.js"></script>
+
+
 	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/disclaimer.js"></script>
+	<script type="text/javascript" src="js/upload-navfit.js"></script>
+	<script type="text/javascript" src="js/new-navfit.js"></script>
+	<script type="text/javascript" src="js/sharedButtonSetup.js"></script>
+	
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/alerts.js"></script>
 </head>
@@ -23,9 +33,14 @@
 				</div>
 			
 				<div class="button-bar">
-			    <button disabled type="button" class="btn btn-primary action-btn" id="import-btn">Import<div id="import-loader-aspect"><div id="loader"></div></div></button>
-			    <button disabled type="button" class="btn btn-primary action-btn" id="new-file-btn">New NAVFIT<div id="new-file-loader-aspect"><div id="loader"></div></div></button>
-			    <button disabled type="button" class="btn btn-warning action-btn" id="edit-btn">Edit</button>
+					<button disabled type="button" class="btn btn-primary action-btn" id="login-btn"><i class="fa fa-id-card" aria-hidden="true"></i> Login with CAC<div id="login-loader-aspect"><div id="loader"></div></div></button>
+					<button disabled type="button" class="btn btn-primary action-btn" id="user-btn"><span class="glyphicon glyphicon-list" aria-hidden="false"></span> NAVFITs<div id="user-loader-aspect"><div id="loader"></div></div></button>
+					
+			    <button disabled type="button" class="btn btn-default action-btn" id="import-btn"><span class="glyphicon glyphicon-cloud-upload" aria-hidden="false"></span> Import<div id="import-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="new-file-btn"><span class="glyphicon glyphicon-flash" aria-hidden="false"></span> New NAVFIT<div id="new-file-loader-aspect"><div id="loader"></div></div></button>
+			    <button disabled type="button" class="btn btn-default action-btn" id="edit-btn"><span class="glyphicon glyphicon-edit" aria-hidden="false"></span> Edit Existing</button>
+
+			    <button disabled type="button" class="btn btn-default action-btn" id="logout-btn"><i class="fa fa-moon-o" aria-hidden="true"></i></span> Logout<div id="logout-loader-aspect"><div id="loader"></div></div></button>
 			  </div>
 
 	</nav>
@@ -41,29 +56,44 @@
 
 
 			<div id="main-logo">
-				<h1 id="main-title">NAVFIT99</h1>
+				<h1 id="main-title">NAVFIT<span id="main-title-number"></span></h1><h2 id="main-title-plus">[ONLINE]</h2>
 
 			</div>
 		
-			<h4 id="main-tagline">When '98A no work.</h4>
+			<h4 id="main-tagline">Barebones NAVFIT.</h4>
 
 
 			
 			<ol><h2>FAQ</h2>
 			  <li>
-			  	<ul><strong>What is NAVFIT99?</strong>
-			  		<li>NAVFIT99 is an open source project that allows you to view and edit NAVFIT98A database <i>(.accdb)</i> files. This website uses a publicly accessible instance of NAVFIT99 on the internet which is intended for evaluation and testing purposes only. </li>
-			  	</ul>
-			  </li>
-			 <li>
-			  	<ul><strong>What is NAVFIT98A?</strong>
-			  		<li>NAVFIT98A is a program that allows people to organize and edit U.S. Navy Evaluations and Fitness Reports. NAVFIT98A is available for Windows. See <a href="http://www.public.navy.mil/bupers-npc/career/performanceevaluation/pages/softwareforms.aspx">here</a> for more information.</li>
-			  	</ul>
+			  	<strong>What is NAVFIT Online?</strong>
+			  	<p>NAVFIT Online is an open source project that allows you to view and edit NAVFIT98A database <i>(.accdb)</i> files. This website uses a publicly accessible server on the internet for functionality. This server is intended for demo purposes only. </p>
 			  </li>
 			  <li>
-			  	<ul><strong>Is there a warranty for NAVFIT99?</strong>
-			  		<li>NO. NAVFIT99 is released under <a href="assets/LICENSE.txt">MIT License</a>.
-			  	</ul>
+			  	<strong>Can I run NAVFIT Online on my own computer?</strong>
+			  	<p>Yes, this project is divided into three parts.
+			  		<ul>
+			  			<li>
+			  				<i class="fa fa-code-fork" aria-hidden="true"></i> <a href="https://github.com/ansonl/navfit99-server">navfit99-server</a>
+			  			</li>
+			  			<li>
+			  				<i class="fa fa-code-fork" aria-hidden="true"></i> <a href="https://github.com/ansonl/navfit99-js">navfit99-js</a></li>
+			  			<li>
+			  				<i class="fa fa-code-fork" aria-hidden="true"></i> <a href="https://github.com/ansonl/client-cert-auth">client-cert-auth</a></li>
+			  		</ul>
+			  	Please see each part's GitHub repo for directions by clicking on them.</p>
+			  </li>
+			 <li>
+			 		<strong>What is NAVFIT98A?</strong>
+			  	<p>NAVFIT98A is a Windows program created by SPAWAR that allows people to organize and edit U.S. Navy Evaluations and Fitness Reports. NAVFIT98A is available for Windows. See <a href="http://www.public.navy.mil/bupers-npc/career/performanceevaluation/Pages/default.aspx">here</a> for more information.</p>
+			  </li>
+			  <li>
+			  	<strong>Is this associated with the U.S. Government?</strong>
+			  		<p>NO.</p>
+			  </li>
+			  <li>
+						<strong>Is there a warranty for NAVFIT99?</strong>
+			  		<p>NO. NAVFIT99 is released under <a href="assets/LICENSE.txt">MIT License</a>.</p>
 			  </li>
 			</ol>
 
@@ -87,6 +117,7 @@
 		</form>
 	</div>
 
+	<!-- Disclaimer -->
 	<div class="alert alert-warning disclaimer" role="alert">
 		<h3>NOTICE AND DISCLAIMER</h3>
 		<p>This a web demo of NAVFIT99, an open source project. </p>
