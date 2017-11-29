@@ -12,7 +12,7 @@ var authBaseURL = 'https://runs.io';
 var authVerifyHandler = '/verify';
 var authLogoutHandler = '/logout';
 
-var backendBaseURL = 'http://localhost:8000';
+var backendBaseURL = 'https://fitrep.herokuapp.com';
 var backendFileHandler = '/file';
 var backendFileUUIDKey = 'fileUUID';
 
