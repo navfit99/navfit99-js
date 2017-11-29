@@ -1,6 +1,3 @@
-//var backendBaseURL = 'http://localhost:8000/';
-//var frontendBaseURL = 'http://localhost';
-
 $(window).on("load", function(){
 
 });
