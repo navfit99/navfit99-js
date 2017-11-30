@@ -1,4 +1,6 @@
+//js GET params
 var fileUUIDKey = 'uuid';
+var authErrorKey = 'authError';
 
 //auth parameter names for auth server
 var urlEditorIDKey = 'user';

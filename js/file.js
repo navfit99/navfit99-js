@@ -245,7 +245,7 @@ function createFolderElement(folderMap) {
 		actionsDropdownBtn.html('<span class="glyphicon glyphicon-option-horizontal" aria-hidden="false">&nbsp;<span class="caret"></span>');
 
 		var actionList = jQuery('<ul/>', {
-			class: 'dropdown-menu'
+			class: 'dropdown-menu file-drop-menu'
 		});
 
 		//Add folder icon
@@ -508,6 +508,11 @@ function processFolders(data) {
 
 	console.log(data);
 
+	if (folders.length == 0) {
+		showWarnAlertWithTextWithLink('No folders in NAVFIT database, click \'</>\' to see your NAVFIT database data. ', null);
+		setTimeout(warnCloseButtonClicked, 5000);
+	}
+
 	$('#folders-container').empty();
 
 	for (var i = 0; i < data.length; i++) {
@@ -529,6 +534,12 @@ function processReports(data) {
 	var retrievedReports = data;
 
 	console.log(retrievedReports);
+
+	if (retrievedReports.length == 0) {
+		showWarnAlertWithTextWithLink('No reports in folder.', null);
+		setTimeout(warnCloseButtonClicked, 5000);
+	}
+
 	for (var i = 0; i < retrievedReports.length; i++) {
 		var reportMap = retrievedReports[i];
 
@@ -573,11 +584,14 @@ function loadReportsForFolderFromServer(folderID, callback) {
 	loadData(getUrlParameter(fileUUIDKey), 3, folderID, callback);
 }
 
+/*
+ * Request navift, folder, report data from backend
+ */
 function loadData(fileUUID, type, typeData, callback) {
 	/*
 	disableMainUI();
-	$('#new-file-loader-aspect').show();
 	*/
+	$('#content-loader-overlay').show();
 
 	var editorID;
 	var authToken;
@@ -631,6 +645,8 @@ function loadData(fileUUID, type, typeData, callback) {
     		callback();
 
     	console.log(callback);
+
+    	$('#content-loader-overlay').hide();
     }
 	});
 

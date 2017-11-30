@@ -27,7 +27,13 @@ function showSuccessAlertWithText(text) {
 function showWarnAlertWithTextWithLink(text, link) {
 	$('#warn-alert').show();
 	$('#warn-text').text(text);
-	$('#warn-link').val(link);
+	if (link != null) {
+		$('#warn-link').show();
+		$('#warn-link').val(link);
+	} else {
+		$('#warn-link').hide();
+	}
+	
 }
 
 function showTextAreaAlertWithTextWithData(text, data) {

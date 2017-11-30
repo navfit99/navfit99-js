@@ -9,6 +9,7 @@
 #reports-container {
 	position: relative;
 	overflow-y: scroll;
+	height: 100%;
 }
 
 .report-row {
@@ -42,6 +43,7 @@
 .report-selected {
 	background-color: #763806;
   transition: all 0.5s;
+  animation: flicker 2s infinite; /* defined in folders.css */
 }
 
 .report-comment {

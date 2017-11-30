@@ -29,6 +29,20 @@ function setupLoginLogoutUI() {
   }
 }
 
+function checkForAuthError() {
+  var authError = getUrlParameter(authErrorKey);
+  switch(parseInt(authError, 10)) {
+    case 1:
+      showErrorAlertWithText('No client certificate provided. Did you select a certificate? Restart browser to try again.');
+      break;
+    case 2: 
+      showErrorAlertWithText('Your certificate could not be verified. Select your DoD ID certificate. Restart browser to try again.');
+      break;
+    default:
+      console.log('Unknown autherror ' + autherror);
+  }
+}
+
 $(document).ready(function() {
   checkAuthStruct(getAuthStruct(true), function(valid) {
     if (!valid) {

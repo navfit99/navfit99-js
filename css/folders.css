@@ -9,6 +9,7 @@
 #folders-container {
 	position: relative;
 	overflow-y: scroll;
+	height: 100%;
 }
 
 .folder-row {
@@ -42,6 +43,13 @@
 .folder-selected {
 	background-color: #C06306;
   transition: all 0.5s;
+  animation: flicker 2s infinite;
+}
+
+@keyframes flicker {
+	0% { opacity: 1; }
+	50% { opacity: 0.5; }
+	100% { opacity: 1; }
 }
 
 .folder-comment {
