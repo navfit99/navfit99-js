@@ -34,6 +34,7 @@ NAVFITOnline's development name in parts of the codebase is NAVFIT99.
 - User authentication tokens are stored as [SHA256](https://csrc.nist.gov/csrc/media/publications/fips/180/4/final/documents/fips180-4-draft-aug2014.pdf) hashes.
 -  **Hashed user authentication tokens are stored on a publicly accessible Redis database.**
 - User authentication tokens are passed back to the browser as GET parameters. 
+- Certificate revovation checking is turned off. 
 -  **The decision to use a publicly accessible database for storage was made to balance the cost of running the public demo server backend (navfit99-server) on Heroku. ** As with all protected data, there is always the possibility of an exploit or brute force attack to decrypt data. 
 
 ### Can I run NAVFITOnline on my own computer?
