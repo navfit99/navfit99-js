@@ -1,6 +1,6 @@
 # NAVFITOnline-js
 
-![enter image description here](https://github.com/navfit99/navfit99.github.io/blob/master/assets/img/navfit99-256.png?raw=true)
+![NAVFIT hi res](https://github.com/navfit99/navfit99.github.io/blob/master/assets/img/navfit99-256.png?raw=true)
 
 ### Use NAVFITOnline at **[https://navfit99.github.io](https://navfit99.github.io)**. 
 
@@ -46,8 +46,8 @@ NAVFIT98A is a Windows program created by SPAWAR that allows people to organize 
 ### Is NAVFITOnline associated with the U.S. Government?
 NO.
 
-### Is there a warranty for NAVFITOnline?
-NO. NAVFITOnline is released under MIT License.
+### Is there a warranty for NAVFITOnline? what license is there?
+NO. NAVFITOnline is released under MIT License with attribution required.
 
 -----
 
