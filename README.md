@@ -13,6 +13,11 @@
 ### What is NAVFITOnline?
 NAVFITOnline is an open source project that allows you to view and edit NAVFIT98A database (.accdb) files. The provided [GitHub pages version of the webapp](https://navfit99.github.io) uses a publicly accessible server on the internet for functionality. This server is intended for demo purposes only. 
 
+Users that may find this helpful include:
+- Apple Mac OSX users
+- Linux users
+- Windows users unable to install MSAccess drivers or NAVFIT98A
+
 NAVFITOnline's development name in parts of the codebase is NAVFIT99.
 
 ### Features of NAVFITOnline
