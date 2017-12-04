@@ -1,5 +1,7 @@
 # NAVFITOnline-js
 
+##### View and Edit US Navy NAVFIT files without NAVFIT98A.
+
 ![NAVFIT hi res](https://github.com/navfit99/navfit99.github.io/blob/master/assets/img/navfit99-256.png?raw=true)
 
 ### Use NAVFITOnline at **[https://navfit99.github.io](https://navfit99.github.io)**. 
