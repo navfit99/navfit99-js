@@ -42,7 +42,8 @@ NAVFITOnline's development name in parts of the codebase is NAVFIT99.
 -  **Hashed user authentication tokens are stored on a publicly accessible Redis database.**
 - User authentication tokens are passed back to the browser as GET parameters. 
 - Certificate revovation checking is turned off. 
--  **The decision to use a publicly accessible database for storage was made to balance the cost of running the public demo server backend (navfit99-server) on Heroku. ** As with all protected data, there is always the possibility of an exploit or brute force attack to decrypt data. 
+-  **The decision to use a publicly accessible database for storage was made to balance the cost of running the public demo server backend (navfit99-server) on Heroku.** As with all protected data, there is always the possibility of an exploit or brute force attack to decrypt data. 
+- Demo NAVFIT-server has a 1 week expiration for saved NAVFITs. Editing a NAVFIT will reset the expiration to be 1 week from the time to latest edit. 
 
 ### Can I run NAVFITOnline on my own computer?
 Yes, please see each project portions' READMEs' *Setup* section.
