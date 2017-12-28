@@ -19,8 +19,13 @@ Users that may find this helpful include:
 - Apple Mac OSX users
 - Linux users
 - Windows users unable to install MSAccess drivers or NAVFIT98A
+- Users who want to view older electronic evaluations when NAVFIT98A is no longer available. 
 
 NAVFITOnline's development name in parts of the codebase is NAVFIT99.
+
+### This seems like a limited solution. Why don't you make a \[cloud based/centralized/reorganized/insert word here\] evaluation system?
+
+NAVFITOnline is meant to be a "drop-in" "shim" solution for working with the current NAVFIT98A program and format. Making a new CMS system for Navy evaluations is a different project. The goal of NAVFITOnline is to retain compatibility with the NAVFIT98A program (ex: make changes in NAVFITOnline -> open in NAVFIT98A).  To allow users a different way to view and edit evaluations if NAVFIT98A is unavailable for some reason. Features can be expanded on while maintaining compatibility. 
 
 ### Features of NAVFITOnline
 - Import NAVFIT database *accdb* files used by NAVFIT98A. 
