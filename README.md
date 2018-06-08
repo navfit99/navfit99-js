@@ -12,6 +12,8 @@
 
 #### The CAC login demo server is hosted on a personal VM and likely be down due to restarts, etc ~~bears~~. *Recommend you run [client-cert-auth](https://github.com/ansonl/client-cert-auth) on your own machine and change `authBaseURL` (explained in Step #3 in instructions below) to run your own CAC login server.*
 
+![NAVFIT online demo clip](https://github.com/ansonl/navfit99-js/raw/master/assets/img/navfit99capture.gif)
+
 ### What is NAVFITOnline?
 NAVFITOnline is an open source project that allows you to view and edit NAVFIT98A database (.accdb) files. The provided [GitHub pages version of the webapp](https://navfit99.github.io) uses a publicly accessible server on the internet for functionality. This server is intended for demo purposes only. 
 
